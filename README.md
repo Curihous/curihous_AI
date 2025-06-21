@@ -12,7 +12,8 @@
 - PyTorch: PPO 모델 학습 프레임워크 (SB3 내부 사용)
 
 ### 핵심 폴더 구조
-```curihous_AI/
+```
+curihous_AI/
 ├── venv/                      # ✅ 가상환경 (Python 패키지, 실행파일 등 포함) ← Git에 올리지 않음
 │
 ├── app/                      # ✅ FastAPI 백엔드 애플리케이션 코드
