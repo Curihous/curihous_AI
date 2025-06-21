@@ -12,36 +12,50 @@
 - PyTorch: PPO 모델 학습 프레임워크 (SB3 내부 사용)
 
 ### 핵심 폴더 구조
-```ai-server/
-├── README.md
-├── requirements.txt (필요 패키지 목록)
-├── .gitignore
-├── main.py (FastAPI 진입점)
-├── app/ (전체 앱 실행 로직 포함)
+```curihous_AI/
+├── venv/                      # ✅ 가상환경 (Python 패키지, 실행파일 등 포함) ← Git에 올리지 않음
 │
-├── modules/ (AI 기능별 모듈 디렉터리)
-│ ├── trading_strategy/ (강화학습 기반 투자 전략 추천 기능)
-│ │ ├── init.py
-│ │ ├── api.py /recommend 엔드포인트 정의
-│ │ ├── model.py PPO 모델 로딩 및 추론
-│ │ ├── state.py 상태 벡터 구성 및 행동 디코딩
-│ │ ├── env/
-│ │ │ └── my_trading_env.py 사용자 정의 강화학습 환경 클래스
-│ │ └── data/
-│ │ ├── preprocess.py 기술 지표 및 감성 분석 전처리
-│ │ └── external_api.py Benzinga 등 외부 API 연동 래퍼
+├── app/                      # ✅ FastAPI 백엔드 애플리케이션 코드
+│   ├── main.py               # FastAPI 앱 시작점
+│   ├── api/                  # 라우터 (예: /recommend)
+│   │   └── recommend.py
+│   ├── schemas/              # 요청/응답 Pydantic 모델
+│   │   └── recommend.py
+│   ├── services/             # 상태 생성, 추천 해석 등 비즈니스 로직
+│   │   └── recommender.py
+│   ├── core/                 # 공통 유틸 (설정, 예외처리, 응답포맷)
+│   │   ├── config.py         # .env 설정 로더
+│   │   ├── exceptions.py     # GlobalExceptionHandler
+│   │   └── response.py       # ApiResponse
+│   └── utils/                # 기술 지표 계산, 뉴스 처리 등 유틸
+│       ├── ta_utils.py
+│       └── news_utils.py
 │
-├── configs/
-│ ├── settings.py 설정값 및 환경변수 로딩
-│ └── secrets.toml 민감 정보 관리 파일 (.gitignore 대상)
+├── ai/                       # ✅ 강화학습 관련 코드
+│   ├── env/                  # 사용자 정의 강화학습 환경
+│   │   └── my_trading_env.py
+│   ├── train/                # PPO 학습 스크립트
+│   │   └── train_agent.py
+│   ├── inference/           # FastAPI 서버에서 모델 서빙을 위한 모듈
+│   │   └── policy_wrapper.py
+│   └── models/              # ✅ 사용자별 학습된 정책 저장소 (.pkl)
+│       ├── user_1.pkl
+│       ├── user_2.pkl
+│       └── ...
 │
-├── models/
-│ └── trading_strategy/
-│ └── policy_model.pkl 학습된 강화학습 정책 모델
+├── data/                     # ✅ 실시간 데이터 수집 및 전처리
+│   ├── preprocess.py         # OHLCV, 기술지표, 뉴스 감성 등 전처리
+│   └── raw/                  # 수집된 원본 데이터 저장소
+│       └── tsla_ohlcv.csv
 │
-└── tests/
-├── test_main.py
-└── trading_strategy/ 유닛 테스트 모음
+├── scripts/                  # 학습 or 서버 실행용 스크립트
+│   ├── launch_train.sh
+│   └── launch_server.sh
+│
+├── .env                      # 민감한 설정 (.env.example도 같이 두기)
+├── .gitignore                # venv, __pycache__, .env 등 제외
+├── requirements.txt          # pip install -r requirements.txt 용
+└── README.md                 # 프로젝트 설명서
 ```
 
 ### 실행 방법
